@@ -20,6 +20,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelec
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
 import com.adobe.aem.support.contentbackflow.entity.ContentSetJob;
+import com.adobe.aem.support.contentbackflow.entity.ContentSetInput;
 import com.adobe.aem.support.contentbackflow.jobs.ContentSetCountConsumer;
 import com.adobe.aem.support.contentbackflow.utils.HttpHelper;
 import com.google.gson.Gson;
@@ -37,7 +38,7 @@ public class GetContentSetJobsServlet extends HttpServlet {
 
   private final int LIMIT = 10;
 
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try (PrintWriter writer = response.getWriter()) {
       int limit = getLimit(request);
       Collection<Job> jobs = jobManager.findJobs(QueryType.ALL, ContentSetCountConsumer.TOPIC, limit, null);
@@ -47,7 +48,7 @@ public class GetContentSetJobsServlet extends HttpServlet {
         ContentSetJob contentSetJob = new ContentSetJob();
         contentSetJob.setJobId(job.getId());
         contentSetJob.setStatus(job.getJobState().name());
-        contentSetJob.setContentSetPaths((List) job.getProperty("input"));
+        contentSetJob.setInput((ContentSetInput) job.getProperty("input"));
         contentSetJobs.add(contentSetJob);
       }
       Gson gson = new Gson();

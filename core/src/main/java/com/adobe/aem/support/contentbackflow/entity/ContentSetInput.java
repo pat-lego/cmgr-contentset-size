@@ -9,9 +9,9 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Getter @Setter @NoArgsConstructor
-public class ContentSetSize implements Serializable {
+public class ContentSetInput implements Serializable {
 
     @NonNull
-    public List<String> contentSetPaths;
+    public List<String> paths;
     
 }

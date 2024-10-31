@@ -17,6 +17,6 @@ public class ContentSetJob {
     public String status;
 
     @NonNull
-    public List<String> contentSetPaths;
+    public ContentSetInput input;
 
 }

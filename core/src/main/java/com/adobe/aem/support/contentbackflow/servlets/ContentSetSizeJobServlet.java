@@ -17,7 +17,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardContextSelect;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 
-import com.adobe.aem.support.contentbackflow.entity.ContentSetSize;
+import com.adobe.aem.support.contentbackflow.entity.ContentSetInput;
 import com.adobe.aem.support.contentbackflow.jobs.ContentSetCountConsumer;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -26,9 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component(service = Servlet.class, immediate = true)
-@HttpWhiteboardServletPattern(value = "/cbf/contentset/size")
+@HttpWhiteboardServletPattern(value = "/cbf/contentset/size/*")
 @HttpWhiteboardContextSelect(value = ServletContext.CONTEXT_SELECTOR)
-public class CreateContentSetSizeJobServlet extends HttpServlet {
+public class ContentSetSizeJobServlet extends HttpServlet {
 
     @Reference
     private JobManager jobManager;
@@ -37,7 +37,7 @@ public class CreateContentSetSizeJobServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) {
         try (PrintWriter writer = response.getWriter()) {
-            ContentSetSize input = getPayload(request);
+            ContentSetInput input = getPayload(request);
             Map<String, Object> props = Map.of("input", input);
             Job job = jobManager.addJob(ContentSetCountConsumer.TOPIC, props);
             String jobId = job.getId();
@@ -52,9 +52,26 @@ public class CreateContentSetSizeJobServlet extends HttpServlet {
         }
     }
 
-    public ContentSetSize getPayload(HttpServletRequest request) throws IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try (PrintWriter writer = response.getWriter()) {
+            Job job = this.jobManager.getJobById("2024/10/31/14/55/5c844c38-9862-408d-93e0-72fde806068a_6");
+            log.debug("Retrieved URL {}", request.getRequestURI());
+            if (job != null) {
+                writer.write(job.getJobState().name());
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_OK);
+                writer.flush();
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        }
+        
+    }
+
+    public ContentSetInput getPayload(HttpServletRequest request) throws IOException {
         String payload = IOUtils.toString(request.getInputStream(), java.nio.charset.Charset.defaultCharset());
         Gson gson = new Gson();
-        return gson.fromJson(payload, ContentSetSize.class);
+        return gson.fromJson(payload, ContentSetInput.class);
     }
 }

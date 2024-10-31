@@ -1,0 +1,8 @@
+// Configuration created by Apache Sling JCR Installer
+{
+  "scripts":[
+    "create path /var/support(sling:Folder)/contentbackflow(sling:Folder)",
+    "create service user support-contentbackflow",
+    "set ACL on /var/support/contentbackflow\r\n    allow jcr:all for support-contentbackflow\r\nend\r\n\r\nset ACL on /content\r\n    allow jcr:read for support-contentbackflow\r\nend"
+  ]
+}

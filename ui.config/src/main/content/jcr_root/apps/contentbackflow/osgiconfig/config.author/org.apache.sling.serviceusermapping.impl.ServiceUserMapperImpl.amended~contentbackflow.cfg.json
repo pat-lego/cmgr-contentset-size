@@ -1,0 +1,6 @@
+// Configuration created by Apache Sling JCR Installer
+{
+  "user.mapping":[
+    "contentbackflow.core:support-contentbackflow=[support-contentbackflow]"
+  ]
+}
