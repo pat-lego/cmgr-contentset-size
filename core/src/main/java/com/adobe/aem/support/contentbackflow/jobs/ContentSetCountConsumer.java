@@ -93,6 +93,7 @@ public class ContentSetCountConsumer implements JobConsumer {
         result.setProperty("id", job.getId());
         result.setProperty("status", JobState.SUCCEEDED.name());
         result.setProperty("completed", Calendar.getInstance());
+        result.addMixin("sling:HierarchyNode");
     }
 
     private long count(String path, ResourceResolver resourceResolver, long total) {

@@ -87,7 +87,7 @@ public class GetContentSetJobsServlet extends HttpServlet {
   }
 
   public NodeIterator executeQuery(int limit, Session session) throws InvalidQueryException, RepositoryException {
-    String query = "select * from [nt:unstructured] as a where isdescendantnode(a, \"/var/support/contentbackflow\") option(index tag supportcbf limit "
+    String query = "select * from [nt:unstructured] as a where isdescendantnode(a, \"/var/support/contentbackflow\") order by [id] option(index tag supportcbf limit "
         + limit + ")";
     QueryResult result = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2).execute();
     return result.getNodes();
