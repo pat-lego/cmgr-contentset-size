@@ -90,7 +90,7 @@ public class GetContentSetJobsServlet extends HttpServlet {
       }
       return l;
     } catch (Exception e) {
-      log.warn("Failed to parse limit value {} dfaulting to {}", limit, LIMIT);
+      log.warn("Failed to parse limit value {} defaulting to {}", limit, LIMIT);
       return LIMIT;
     }
     
