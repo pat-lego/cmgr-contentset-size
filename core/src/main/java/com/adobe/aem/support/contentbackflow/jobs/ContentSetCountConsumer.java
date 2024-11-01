@@ -59,10 +59,10 @@ public class ContentSetCountConsumer implements JobConsumer {
             persistResult(job, resourceResolver, total);
             return JobResult.OK;
         } catch (LoginException e) {
-            log.error("Failed to authenticate with subservice, result will not be persisted in the repository", e);
+            log.error("Job {} failed to authenticate with subservice, result will not be persisted in the repository", job.getId(), e);
             return JobResult.FAILED;
         } catch (PersistenceException | RepositoryException e) {
-            log.error("Failed to persist the result, result will not be persisted in the repository", e);
+            log.error("Job {} failed to persist the result, result will not be persisted in the repository", job.getId(), e);
             return JobResult.FAILED;
         }
     }

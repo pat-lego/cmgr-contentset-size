@@ -20,7 +20,13 @@ Or to deploy only the bundle to the author, run
 
 ## Documentation
 
-The build process also generates documentation in the form of README.md files in each module directory for easy reference. Depending on the options you select at build time, the content may be customized to your project.
+`POST /cbf/contentset/size/` with a `com.adobe.aem.support.contentbackflow.entity.ContentSetInput` object this results in a Sling Job ID being returned
+
+`GET /cbf/contentset/size/<sling_job_id>` returns `com.adobe.aem.support.contentbackflow.entity.ContentSetResult` object
+- N.B. You will only see the result once the job completes. 
+- N.B. If the job fails it will not appear in the API but in the logs as an error.
+
+`GET /cbf/contentset/sizes?limit=X` returns a set of `com.adobe.aem.support.contentbackflow.entity.ContentSetResult` objects
 
 ### Unit tests
 
