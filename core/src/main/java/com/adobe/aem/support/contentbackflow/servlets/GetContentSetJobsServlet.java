@@ -83,7 +83,17 @@ public class GetContentSetJobsServlet extends HttpServlet {
       return LIMIT;
     }
 
-    return Integer.parseInt(limit);
+    try {
+      int l = Integer.parseInt(limit);
+      if (l < 0) {
+        return LIMIT;
+      }
+      return l;
+    } catch (Exception e) {
+      log.warn("Failed to parse limit value {} dfaulting to {}", limit, LIMIT);
+      return LIMIT;
+    }
+    
   }
 
   public NodeIterator executeQuery(int limit, Session session) throws InvalidQueryException, RepositoryException {
