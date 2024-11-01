@@ -33,13 +33,6 @@ public class HttpHelper {
         return entries.get(key);
     }
 
-    public <T> T getQueryStringByKey(String key, T fallback) {
-        if (key == null) {
-            return null;
-        }
-        return Optional.ofNullable((T) this.entries.get(key)).orElse(fallback);
-    }
-
     public Map<String, String> getQueryAllQueryString() {
         return this.entries;
     }

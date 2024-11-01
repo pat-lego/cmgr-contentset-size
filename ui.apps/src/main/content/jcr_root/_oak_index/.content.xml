@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:oak="http://jackrabbit.apache.org/oak/ns/1.0" xmlns:rep="internal"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="nt:unstructured">
+    <support.contentbackflowindex-1-custom-1
+        jcr:primaryType="oak:QueryIndexDefinition"
+        async="[async]"
+        compatVersion="{Long}2"
+        evaluatePathRestrictions="{Boolean}true"
+        includedPaths="[/var/support/contentbackflow]"
+        queryPaths="[/var/support/contentbackflow]"
+        reindex="{Boolean}false"
+        reindexCount="{Long}2"
+        seed="{Long}3328846864311993479"
+        tags="[supportcbf]"
+        type="lucene">
+        <indexRules jcr:primaryType="nt:unstructured">
+            <nt:unstructured
+                jcr:primaryType="nt:unstructured"
+                indexNodeName="{Boolean}true">
+                <properties jcr:primaryType="nt:unstructured">
+                    <id
+                        jcr:primaryType="nt:unstructured"
+                        name="id"
+                        ordered="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        type="String"/>
+                    <total
+                        jcr:primaryType="nt:unstructured"
+                        name="total"
+                        ordered="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        type="Long"/>
+                    <completed
+                        jcr:primaryType="nt:unstructured"
+                        name="completed"
+                        ordered="{Boolean}true"
+                        propertyIndex="{Boolean}true"
+                        type="Date"/>
+                    <paths
+                        jcr:primaryType="nt:unstructured"
+                        name="paths"
+                        propertyIndex="{Boolean}true"
+                        type="String"/>
+                </properties>
+            </nt:unstructured>
+        </indexRules>
+    </support.contentbackflowindex-1-custom-1>
+</jcr:root>

@@ -19,6 +19,7 @@ language governing permissions and | limitations under the License. -->
   <modules>
     <module>all</module>
     <module>core</module>
+    <module>ui.apps</module>
     <module>ui.apps.structure</module>
     <module>ui.config</module>
   </modules>
@@ -244,6 +245,11 @@ Bundle-DocURL: -plugin org.apache.sling.caconfig.bndplugin.ConfigurationClassSca
           <configuration>
             <filterSource>src/main/content/META-INF/vault/filter.xml</filterSource>
             <validatorsSettings>
+              <jackrabbit-packagetype>
+                <options>
+                  <immutableRootNodeNames>apps,libs,oak:index</immutableRootNodeNames>
+                </options>
+              </jackrabbit-packagetype>
               <jackrabbit-nodetypes>
                 <options> <!-- use the nodetypes and namespaces from the aem-nodetypes.jar provided
                   in the plugin dependencies -->

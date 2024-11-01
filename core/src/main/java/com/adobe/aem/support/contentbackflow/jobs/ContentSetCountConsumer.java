@@ -1,26 +1,28 @@
 package com.adobe.aem.support.contentbackflow.jobs;
 
-import java.time.Month;
 import java.time.Year;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 
-import org.apache.poi.hdgf.streams.Stream;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.apache.jackrabbit.commons.JcrUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ResourceUtil;
 import org.apache.sling.event.jobs.Job;
+import org.apache.sling.event.jobs.Job.JobState;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.adobe.aem.support.contentbackflow.entity.ContentSetInput;
-import com.adobe.internal.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,29 +59,40 @@ public class ContentSetCountConsumer implements JobConsumer {
             persistResult(job, resourceResolver, total);
             return JobResult.OK;
         } catch (LoginException e) {
-            log.error("Failed to authenticate with subservice", e);
+            log.error("Failed to authenticate with subservice, result will not be persisted in the repository", e);
             return JobResult.FAILED;
-        } catch (PersistenceException e) {
-            log.error("Failed to persist the result", e);
+        } catch (PersistenceException | RepositoryException e) {
+            log.error("Failed to persist the result, result will not be persisted in the repository", e);
             return JobResult.FAILED;
         }
     }
 
-    private void persistResult(Job job, ResourceResolver resourceResolver, long total) throws PersistenceException {
-        Resource path = guaranteeExistance(resourceResolver);
-        String id = ResourceUtil.createUniqueChildName(path, UUID.createUUID().toString());
-        ResourceUtil.getOrCreateResource(resourceResolver, path.getPath() + "/" + id, "nt:unstructured", "nt:unstructured", false);
+    private void persistResult(Job job, ResourceResolver resourceResolver, long total)
+            throws PersistenceException, RepositoryException {
+        Session session = resourceResolver.adaptTo(Session.class);
+        String path = guaranteeExistance(session);
+        persistResult(job, session, total, path);
         resourceResolver.commit();
     }
 
-    private Resource guaranteeExistance(ResourceResolver resourceResolver) throws PersistenceException {
+    private String guaranteeExistance(Session session)
+            throws PersistenceException, RepositoryException {
         int year = Year.now().getValue();
         int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
         String path = completed + "/" + year + "/" + month + "/" + day;
-        resourceResolver.refresh();
-        return ResourceUtil.getOrCreateResource(resourceResolver, path, "sling:Folder", "sling:Folder", false);
+        return JcrUtils.getOrCreateByPath(path, "sling:Folder", session).getPath();
+    }
+
+    private void persistResult(Job job, Session session, long total, String path) throws PathNotFoundException, RepositoryException {
+        ContentSetInput input = (ContentSetInput) job.getProperty("input");
+        Node result = JcrUtils.getOrAddNode(session.getNode(path), java.util.UUID.randomUUID().toString(), "nt:unstructured");
+        result.setProperty("paths", input.getPaths().toArray(String[]::new));
+        result.setProperty("total", total);
+        result.setProperty("id", job.getId());
+        result.setProperty("status", JobState.SUCCEEDED.name());
+        result.setProperty("completed", Calendar.getInstance());
     }
 
     private long count(String path, ResourceResolver resourceResolver, long total) {
@@ -89,7 +102,7 @@ public class ContentSetCountConsumer implements JobConsumer {
         } else {
             Iterator it = resource.getChildren().iterator();
             while (it.hasNext()) {
-                Resource child = (Resource) it.next(); 
+                Resource child = (Resource) it.next();
                 total = count(child.getPath(), resourceResolver, total + 1);
             }
         }

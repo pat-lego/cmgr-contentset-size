@@ -12,7 +12,7 @@ import org.osgi.service.http.context.ServletContextHelper;
 
 @Component(service = ServletContextHelper.class, property = {
         "osgi.http.whiteboard.context.name=" + ServletContext.CONTEXT_NAME,
-        "osgi.http.whiteboard.context.path=/api/adobe/support"
+        "osgi.http.whiteboard.context.path=" + ServletContext.CONTEXT_PATH
 })
 public class ServletContext extends ServletContextHelper {
 
@@ -21,6 +21,7 @@ public class ServletContext extends ServletContextHelper {
 
     public static final String CONTEXT_NAME = "com.adobe.aem.support.contentbackflow";
     public static final String CONTEXT_SELECTOR = "(osgi.http.whiteboard.context.name=" + CONTEXT_NAME + ")";
+    public static final String CONTEXT_PATH = "/api/adobe/support";
 
     public boolean handleSecurity(HttpServletRequest request,
             HttpServletResponse response) throws IOException {

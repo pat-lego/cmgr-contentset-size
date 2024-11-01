@@ -29,6 +29,8 @@
                 <groupId>org.apache.jackrabbit</groupId>
                 <artifactId>filevault-package-maven-plugin</artifactId>
                 <configuration>
+                    <allowIndexDefinitions>true</allowIndexDefinitions>
+                    <noIntermediateSaves>true</noIntermediateSaves>
                     <properties>
                         <cloudManagerTarget>none</cloudManagerTarget>
                     </properties>
@@ -37,7 +39,7 @@
                         <filter><root>/apps</root></filter>
                         <filter><root>/apps/contentbackflow</root></filter>
                         <!-- Common overlay roots -->
-                                                <filter><root>/apps/sling</root></filter>
+                        <filter><root>/apps/sling</root></filter>
                         <filter><root>/apps/cq</root></filter>
                         <filter><root>/apps/dam</root></filter>
                         <filter><root>/apps/wcm</root></filter>
@@ -48,6 +50,8 @@
 
                         <!-- DAM folder root, will be created via repoinit -->
                         <filter><root>/content/dam/contentbackflow</root></filter>
+
+                        <filter><root>/oak:index</root></filter>
 
                     </filters>
                 </configuration>
